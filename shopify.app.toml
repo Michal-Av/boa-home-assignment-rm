@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+client_id = "bdefaf892dcec54d278fc43cdd5cd20a"
+application_url = "https://promise-courts-printing-gt.trycloudflare.com"
+embedded = true
+name = "boa-home-task-rm"
+handle = "boa-home-task-rm-1"
+
+[webhooks]
+api_version = "2025-01"
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = ""
+
+[auth]
+redirect_urls = [
+  "https://promise-courts-printing-gt.trycloudflare.com/auth/callback",
+  "https://promise-courts-printing-gt.trycloudflare.com/auth/shopify/callback",
+  "https://promise-courts-printing-gt.trycloudflare.com/api/auth/callback"
+]
+
+[pos]
+embedded = false
+
+[build]
+dev_store_url = "home-assignment-259.myshopify.com"
+automatically_update_urls_on_dev = true
