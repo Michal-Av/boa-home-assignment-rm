@@ -1,5 +1,5 @@
 import { Request, Response, RequestHandler } from "express";
-import { saveCartUC, getCartUC, addToCartUC } from "../services/cart.service";
+import { saveCartUC, getCartUC } from "../services/cart.service";
 
 
 export const saveCart: RequestHandler = async (req, res): Promise<void> => {
@@ -42,24 +42,3 @@ export const getCart: RequestHandler = async (req, res) => {
   }
 };
 
-export async function addToCart(req: Request, res: Response): Promise<void> {
-  try {
-      const { cartItems ,customerId  } = req.body;
-      if (!cartItems || !Array.isArray(cartItems)) {
-          res.status(400).json({ error: "Invalid cart items" });
-          return;
-      }
-
-      const result = await addToCartUC(customerId as string, cartItems );
-
-      if (!result.success) {
-          res.status(500).json({ error: result.error });
-          return;
-      }
-
-      res.json(result.data);
-  } catch (error) {
-      console.error("Controller Error - Failed to add to cart:", error);
-      res.status(500).json({ error: "Internal Server Error" });
-  }
-}

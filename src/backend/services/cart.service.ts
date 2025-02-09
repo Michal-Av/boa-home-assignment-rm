@@ -1,4 +1,4 @@
-import { saveCartDA, getCartDA, getCartByCustomerId, deleteCartByCustomerId, addToShopifyCart, getCartIdByCustomer, createNewCart} from "../da/cart.da";
+import { saveCartDA, getCartDA, getCartByCustomerId, deleteCartByCustomerId} from "../da/cart.da";
 import { Cart } from "../models/cart.model";
 
 
@@ -24,23 +24,3 @@ export async function getCartUC(shop: string, customerId: string): Promise<Cart 
 }
 
 
-export async function addToCartUC(customerId: string, cartItems: any[]) {
-  try {
-    let cartId = await getCartIdByCustomer(customerId);
-
-    if (!cartId) {
-      cartId = await createNewCart();
-      console.log("New cart created:", cartId);
-    }
-
-    
-    const formattedCartId = `gid://shopify/Cart/${cartId}`;
-
-    const response = await addToShopifyCart(formattedCartId, cartItems);
-    
-    return { success: true, data: response };
-  } catch (error) {
-    console.error("Service Error - Failed to add to cart:", error);
-    return { success: false, error: "Failed to add to cart" };
-  }
-}

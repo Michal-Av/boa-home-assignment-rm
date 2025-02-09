@@ -1,7 +1,7 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "bdefaf892dcec54d278fc43cdd5cd20a"
-application_url = "https://visitors-ada-allen-inclusive.trycloudflare.com"
+application_url = "https://bracket-wax-motion-would.trycloudflare.com"
 embedded = true
 name = "boa-home-task-rm"
 handle = "boa-home-task-rm-1"
@@ -15,9 +15,9 @@ scopes = ""
 
 [auth]
 redirect_urls = [
-  "https://visitors-ada-allen-inclusive.trycloudflare.com/auth/callback",
-  "https://visitors-ada-allen-inclusive.trycloudflare.com/auth/shopify/callback",
-  "https://visitors-ada-allen-inclusive.trycloudflare.com/api/auth/callback"
+  "https://bracket-wax-motion-would.trycloudflare.com/auth/callback",
+  "https://bracket-wax-motion-would.trycloudflare.com/auth/shopify/callback",
+  "https://bracket-wax-motion-would.trycloudflare.com/api/auth/callback"
 ]
 
 [pos]

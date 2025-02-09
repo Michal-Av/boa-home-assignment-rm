@@ -8,7 +8,7 @@ import {
   BlockStack,
   Checkbox,
   View,
-  InlineStack
+  InlineStack,Grid
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useState } from "react";
 
@@ -107,6 +107,7 @@ function SaveCartExtension() {
       } else {
           console.log("Cart saved successfully!");
           setSavedCartExists(true);
+          setShowSaveOptions(false);
       }
     })
     .catch(error => {
@@ -145,42 +146,45 @@ function SaveCartExtension() {
     <View border="base" padding="base" borderRadius="large">
       <BlockStack spacing="loose">
         <Text size="extraLarge" emphasis="bold">Save Your Cart 🛒</Text>
-
+  
         {isLoggedIn ? (
           <>
             {savedCartExists ? (
-              <Button kind="secondary" onPress={restoreCart}>
-                Retrieve Saved Cart
-              </Button>
+              <Grid columns={["1fr", "1fr"]} spacing="base">
+                  <Button kind="secondary" onPress={restoreCart}>
+                    Retrieve Saved Cart
+                  </Button>
+              
+                  <Button kind="secondary" onPress={() => setShowSaveOptions(true)}>
+                    Save Cart
+                  </Button>
+              </Grid>
+
             ) : (
               <Text size="medium">No saved cart found.</Text>
             )}
-
-            {!showSaveOptions ? (
-              <Button kind="primary" onPress={() => setShowSaveOptions(true)}>
-                Save Cart
-              </Button>
-            ) : (
+  
+            {showSaveOptions && (
               <>
                 {cartLines.length > 0 ? (
                   <BlockStack spacing="tight">
                     {cartLines.map((line) => (
-                       <InlineStack key={line.id} spacing="base">
-                       <Checkbox
-                         name={line.id}
-                         onChange={() => toggleSelection(line.id)}
-                         checked={selectedItems.has(line.id)}
-                       >
-                         {line.merchandise.title}
-                       </Checkbox>
-                     </InlineStack>
+                      <InlineStack key={line.id} spacing="base">
+                        <Checkbox
+                          name={line.id}
+                          onChange={() => toggleSelection(line.id)}
+                          checked={selectedItems.has(line.id)}
+                        >
+                          {line.merchandise.title}
+                        </Checkbox>
+                      </InlineStack>
                     ))}
                   </BlockStack>
                 ) : (
                   <Text size="medium">Your cart is empty.</Text>
                 )}
                 <Button kind="primary" onPress={() => saveCart(cartLines, customer)}>
-                  Confirm Save
+                  Confirm Save ✅
                 </Button>
               </>
             )}
@@ -193,6 +197,8 @@ function SaveCartExtension() {
       </BlockStack>
     </View>
   );
+  
+  
 }
 
 
