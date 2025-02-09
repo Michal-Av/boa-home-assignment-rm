@@ -82,6 +82,8 @@ For more details on how the extension works, see the in-file comments in `Checko
   **- Customization:** Feel free to update the extension point, UI layout, or styles based on your store’s needs.
 
 💬 Contact
+
 Author: Michal Rahat
-Email: michalus.av@gmail.com
+
+Email: michalus.av@gmail.com.
 GitHub: Michal-Av
