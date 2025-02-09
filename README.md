@@ -2,6 +2,14 @@
 
 This repository contains a **Shopify App** with a custom **Checkout UI Extension** that enables users to **save** and **restore** their cart items during checkout. The project is split into several parts: a **backend**, a **frontend**, shared libraries, and the actual extension files.
 
+**Two-Part Save Cart Feature**
+**Part 1**: Saving the Cart During Checkout (Checkout UI Extension)
+This extension (located in extensions/save-cart-for-later) allows customers to select items in their checkout cart and save them for later use. Once saved, the data is stored securely and associated with the logged-in customer.
+
+**Part 2:** Retrieving the Saved Cart (Shopify Section + App Proxy API)
+To enable cart retrieval on the storefront, we added a theme customization feature under sections/import-saved-cart.liquid. This liquid section uses the App Proxy API to fetch the saved cart items from the backend and display them on the site. We placed this section on 
+the /cart page, so customers can easily import their previously saved items into the current cart.
+
 ---
 
 ## Table of Contents
@@ -9,10 +17,6 @@ This repository contains a **Shopify App** with a custom **Checkout UI Extension
 - [Introduction](#introduction)
 - [Project Structure](#project-structure)
 - [Extension: Save-Cart-for-Later](#extension-save-cart-for-later)
-- [Installation & Setup](#installation--setup)
-- [Local Development](#local-development)
-  - [Shopify App / Backend](#shopify-app--backend)
-  - [Checkout UI Extension](#checkout-ui-extension)
 - [Additional Notes](#additional-notes)
 
 ---
@@ -33,6 +37,7 @@ In this project, you’ll find:
 
 Below is an overview of the folders and files based on the screenshot:
 ![image](https://github.com/user-attachments/assets/f8b0a917-6f22-4426-8b77-e531b2576f97)
+
 
 
 ### Key Folders
@@ -70,15 +75,6 @@ This folder is where the actual checkout extension logic lives. The primary file
 For more details on how the extension works, see the in-file comments in `Checkout.tsx`.
 
 ---
-
-## Installation & Setup
-
-1. **Clone this repository** or download it to your local machine.  
-2. **Install dependencies** in the root folder:
-   ```bash
-   npm install
-
-3. **Set up environment variables** in .env (see Environment Variables).
 
 ## Additional Notes
   **- You must be logged in**  as a Shopify customer in checkout for the “Save Cart” functionality to appear.
