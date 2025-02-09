@@ -1,10 +1,14 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
 client_id = "bdefaf892dcec54d278fc43cdd5cd20a"
-application_url = "https://bracket-wax-motion-would.trycloudflare.com"
+application_url = "https://saves-alien-missouri-dee.trycloudflare.com"
 embedded = true
 name = "boa-home-task-rm"
 handle = "boa-home-task-rm-1"
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "home-assignment-259.myshopify.com"
 
 [webhooks]
 api_version = "2025-01"
@@ -15,14 +19,15 @@ scopes = ""
 
 [auth]
 redirect_urls = [
-  "https://bracket-wax-motion-would.trycloudflare.com/auth/callback",
-  "https://bracket-wax-motion-would.trycloudflare.com/auth/shopify/callback",
-  "https://bracket-wax-motion-would.trycloudflare.com/api/auth/callback"
+  "https://saves-alien-missouri-dee.trycloudflare.com/auth/callback",
+  "https://saves-alien-missouri-dee.trycloudflare.com/auth/shopify/callback",
+  "https://saves-alien-missouri-dee.trycloudflare.com/api/auth/callback"
 ]
+
+[app_proxy]
+url = "https://saves-alien-missouri-dee.trycloudflare.com"
+subpath = "cart"
+prefix = "apps"
 
 [pos]
 embedded = false
-
-[build]
-dev_store_url = "home-assignment-259.myshopify.com"
-automatically_update_urls_on_dev = true

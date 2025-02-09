@@ -12,7 +12,7 @@ import {
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useState } from "react";
 
-export default reactExtension("purchase.checkout.block.render", () => <SaveCartExtension />);
+export default reactExtension("purchase.checkout.contact.render-after", () => <SaveCartExtension />);
 
 function SaveCartExtension() {
   const cartLines = useCartLines();
