@@ -8,17 +8,28 @@ import {
   BlockStack,
   Checkbox,
   View,
-  InlineStack,Grid
+  InlineStack,
+  Grid
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useState } from "react";
 
+/**
+ * Entry point for the "Save Cart" functionality, 
+ * using the "purchase.checkout.contact.render-after" extension point.
+ * This means the block will be rendered right after the contact section in the Checkout.
+ */
 export default reactExtension("purchase.checkout.contact.render-after", () => <SaveCartExtension />);
 
+/**
+ * Main component for saving and restoring the cart.
+ */
 function SaveCartExtension() {
-  const cartLines = useCartLines();
-  const customer = useCustomer();
-  const applyCartLinesChange = useApplyCartLinesChange();
+  // Hooks from Shopify Checkout UI Extensions
+  const cartLines = useCartLines(); // Retrieves the current cart line items
+  const customer = useCustomer();   // Retrieves info about the currently logged-in customer
+  const applyCartLinesChange = useApplyCartLinesChange(); // Allows modifications to the cart lines
 
+  // React state variables
   const [isLoaded, setIsLoaded] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [cartItems, setCartItems] = useState([]);
@@ -26,8 +37,13 @@ function SaveCartExtension() {
   const [showSaveOptions, setShowSaveOptions] = useState(false); 
   const [savedCartExists, setSavedCartExists] = useState(false); 
 
+  // Your public or ngrok-based URL for proxying requests to your backend
   const APP_PROXY_URL = " https://e1b7-2a06-c701-4741-d400-bc17-9d2e-2020-9b62.ngrok-free.app/shopify/cart";
 
+  /**
+   * useEffect will check if the customer is logged in as soon as we have the customer data,
+   * and if logged in, it will call checkForSavedCart() to see if the user has an existing saved cart.
+   */
   useEffect(() => {
     if (customer !== undefined) {
       setIsLoggedIn(customer && customer.id ? true : false);
@@ -38,15 +54,20 @@ function SaveCartExtension() {
     }
   }, [customer]);
 
+  /**
+   * checkForSavedCart() makes a GET request to retrieve a previously saved cart for this customer.
+   * If a saved cart is found, we store it in the cartItems state and set savedCartExists to true.
+   */
   async function checkForSavedCart() {
     try {
-      
       const url = `${APP_PROXY_URL}/retrieve?shop=mystore&customerId=${extractId(customer.id)}`;
       const response = await fetch(url, {
         method: "GET",
-        headers: { "Content-Type": "application/json",
-                   "ngrok-skip-browser-warning": "true"
-         },});
+        headers: {
+          "Content-Type": "application/json",
+          "ngrok-skip-browser-warning": "true"
+        }
+      });
 
       if (!response.ok) throw new Error("Server returned error");
 
@@ -61,28 +82,38 @@ function SaveCartExtension() {
     }
   }
 
+  /**
+   * toggleSelection() manages a set of selected cart line item IDs.
+   * If an ID is already in the set, it's removed (unselected); 
+   * otherwise, it's added (selected).
+   */
   function toggleSelection(id) {
     setSelectedItems(prev => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
-        newSet.delete(id); // אם כבר נבחר – מסירים
+        newSet.delete(id);
       } else {
-        newSet.add(id); // אם לא נבחר – מוסיפים
+        newSet.add(id);
       }
       return newSet;
     });
   }
 
-  /** פונקציה לשמירת עגלה */
+  /**
+   * saveCart() is triggered by "Confirm Save" after the user selects items.
+   * It sends a POST request to your backend to store the selected cart lines for the user.
+   */
   function saveCart(cartLines, customer) {
     console.log(cartLines);
+
+    // Filters out only the checked (selected) items
     const selectedCartItems = cartLines
-    .filter(item => selectedItems.has(item.id)) // סינון לפי checkbox מסומן בלבד
-    .map(item => ({
-      id: extractId(item.merchandise.id),
-      name: item.merchandise.title,
-      price: item.cost.totalAmount.amount
-    }));
+      .filter(item => selectedItems.has(item.id))
+      .map(item => ({
+        id: extractId(item.merchandise.id),
+        name: item.merchandise.title,
+        price: item.cost.totalAmount.amount
+      }));
 
     if (selectedCartItems.length === 0) {
       console.log("No items selected.");
@@ -100,21 +131,26 @@ function SaveCartExtension() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(cartItems),
     })
-    .then((res) => res.json())
-    .then(data => {
-      if (data.error) {
+      .then((res) => res.json())
+      .then(data => {
+        if (data.error) {
           console.error("Error saving cart:", data.error);
-      } else {
+        } else {
           console.log("Cart saved successfully!");
           setSavedCartExists(true);
           setShowSaveOptions(false);
-      }
-    })
-    .catch(error => {
-      console.error("Request failed:", error);
-    });
+          setCartItems(selectedCartItems);
+        }
+      })
+      .catch(error => {
+        console.error("Request failed:", error);
+      });
   }
 
+  /**
+   * restoreCart() retrieves the saved cartItems from state,
+   * and adds them back into the current cart using applyCartLinesChange.
+   */
   async function restoreCart() {
     console.log("Restoring saved cart:", cartItems);
     
@@ -124,6 +160,7 @@ function SaveCartExtension() {
         return;
       }
 
+      // Loop through each saved item and add it to the current cart
       for (const item of cartItems) {
         const result = await applyCartLinesChange({
           type: "addCartLine",
@@ -142,6 +179,12 @@ function SaveCartExtension() {
     }
   }
 
+  /**
+   * Renders the UI block:
+   * - Title "Save Your Cart"
+   * - Buttons to save or retrieve the cart, shown only if user is logged in
+   * - If user isn't logged in, shows a prompt to log in
+   */
   return (
     <View border="base" padding="base" borderRadius="large">
       <BlockStack spacing="loose">
@@ -151,15 +194,13 @@ function SaveCartExtension() {
           <>
             {savedCartExists ? (
               <Grid columns={["1fr", "1fr"]} spacing="base">
-                  <Button kind="secondary" onPress={restoreCart}>
-                    Retrieve Saved Cart
-                  </Button>
-              
-                  <Button kind="secondary" onPress={() => setShowSaveOptions(true)}>
-                    Save Cart
-                  </Button>
+                <Button kind="secondary" onPress={restoreCart}>
+                  Retrieve Saved Cart
+                </Button>
+                <Button kind="secondary" onPress={() => setShowSaveOptions(true)}>
+                  Save Cart
+                </Button>
               </Grid>
-
             ) : (
               <Text size="medium">No saved cart found.</Text>
             )}
@@ -197,11 +238,12 @@ function SaveCartExtension() {
       </BlockStack>
     </View>
   );
-  
-  
 }
 
-
+/**
+ * extractId() extracts the numeric ID from Shopify's GraphQL GID format.
+ * For example: "gid://shopify/ProductVariant/123456789" --> "123456789".
+ */
 function extractId(gid) {
   const match = gid.match(/(\d+)$/);
   return match ? match[0] : null;
